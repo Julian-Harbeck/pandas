@@ -73,20 +73,20 @@ if TYPE_CHECKING:
 _mpl_units: dict = {}  # Cache for units overwritten by us
 
 
-def plotable_ea_dtypes() -> list[ExtensionDtype]:
-    """Return a list of plotable ExtensionDtypes."""
-    return [dtype for dtype in _ea_dtypes_registry.dtypes if dtype._is_plotable]
+def plottable_ea_dtypes() -> list[ExtensionDtype]:
+    """Return a list of plottable ExtensionDtypes."""
+    return [dtype for dtype in _ea_dtypes_registry.dtypes if dtype._is_plottable]
 
 
-def plotable_types() -> list[type | str | ExtensionDtype]:
-    """Return a list of plotable types."""
+def plottable_types() -> list[type | str | ExtensionDtype]:
+    """Return a list of plottable types."""
     types: list[type | str | ExtensionDtype] = [
         np.number,
         "datetime",
         "datetimetz",
         "timedelta",
     ]
-    types.extend(plotable_ea_dtypes())
+    types.extend(plottable_ea_dtypes())
     return types
 
 
@@ -100,7 +100,7 @@ def get_pairs() -> list[tuple[type, type[munits.ConversionInterface]]]:
         (pydt.time, TimeConverter),
         (np.datetime64, DatetimeConverter),
     ]
-    pairs.extend([dtype._get_plot_converter() for dtype in plotable_ea_dtypes()])
+    pairs.extend([dtype._get_plot_converter() for dtype in plottable_ea_dtypes()])
     return pairs
 
 

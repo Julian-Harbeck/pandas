@@ -72,7 +72,7 @@ class ExtensionDtype:
 
     * _is_numeric
     * _is_boolean
-    * _is_plotable
+    * _is_plottable
     * _get_common_dtype
 
     The `na_value` class attribute can be used to set the default NA value
@@ -451,12 +451,12 @@ class ExtensionDtype:
         """
         return False
 
-    _is_plotable: bool = False
+    _is_plottable: bool = False
     """
-    Whether this dtype should be considered plotable.
+    Whether this dtype should be considered plottable.
 
-    By default only numeric ExtensionDtypes are assumed to be plotable.
-    For non-numeric ExtensionDtypes, set _is_plotable to True and implement
+    By default only numeric ExtensionDtypes are assumed to be plottable.
+    For non-numeric ExtensionDtypes, set _is_plottable to True and implement
     _get_plot_converter.
     """
 
@@ -467,7 +467,7 @@ class ExtensionDtype:
         """
         Return the type and converter to use for plotting this dtype.
 
-        This is only relevant if _is_plotable is True. The returned type is likely
+        This is only relevant if _is_plottable is True. The returned type is likely
         the same as ``cls._type``. The returned converter should be a subclass
         of matplotlib.units.ConversionInterface.
         """
