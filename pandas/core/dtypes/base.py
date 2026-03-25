@@ -28,6 +28,8 @@ from pandas.core.dtypes.generic import (
 )
 
 if TYPE_CHECKING:
+    import matplotlib.units
+
     from pandas._typing import (
         DtypeObj,
         Shape,
@@ -463,7 +465,7 @@ class ExtensionDtype:
     @classmethod
     def _get_plot_converter(
         cls,
-    ) -> tuple[type, "matplotlib.units.ConversionInterface"]:
+    ) -> tuple[type, matplotlib.units.ConversionInterface]:
         """
         Return the type and converter to use for plotting this dtype.
 
