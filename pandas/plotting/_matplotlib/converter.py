@@ -73,14 +73,14 @@ if TYPE_CHECKING:
 _mpl_units: dict = {}  # Cache for units overwritten by us
 
 
-def plottable_ea_dtypes() -> list[ExtensionDtype]:
+def plottable_ea_dtypes() -> list[type[ExtensionDtype]]:
     """Return a list of plottable ExtensionDtypes."""
     return [dtype for dtype in _ea_dtypes_registry.dtypes if dtype._is_plottable]
 
 
-def plottable_types() -> list[type | str | ExtensionDtype]:
+def plottable_types() -> list[type | str | type[ExtensionDtype]]:
     """Return a list of plottable types."""
-    types: list[type | str | ExtensionDtype] = [
+    types: list[type | str | type[ExtensionDtype]] = [
         np.number,
         "datetime",
         "datetimetz",
