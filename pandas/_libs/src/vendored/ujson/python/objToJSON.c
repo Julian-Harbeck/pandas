@@ -204,7 +204,8 @@ static PyObject *get_values(PyObject *obj) {
       PyErr_Clear();
     } else if (PyObject_HasAttrString(values, "_values_for_json")) {
       // We have gotten an ExtensionArray
-      PyObject *array_values = PyObject_CallMethod(values, "_values_for_json", NULL);
+      PyObject *array_values =
+          PyObject_CallMethod(values, "_values_for_json", NULL);
       Py_DECREF(values);
       values = array_values;
     } else if (PyObject_HasAttrString(values, "__array__")) {
