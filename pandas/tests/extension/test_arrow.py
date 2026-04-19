@@ -1088,6 +1088,34 @@ class TestArrowArray(base.ExtensionTests):
             request.applymarker(mark)
         super().test_loc_setitem_with_expansion_preserves_ea_index_dtype(data)
 
+    @pytest.mark.filterwarnings(
+        "ignore:The default 'epoch' date format is deprecated:DeprecationWarning"
+    )
+    def test_values_for_json(self, data):
+        # GH 65127
+        # All datetime and duration ArrowDtypes with non default resolution of ms fail on roundtrip
+        # The date32 and date64 dtypes fail already in serialization due to as_unit not implemented for them
+        # Currently the json serialization relies on the default 'epoch' format for datetimes, leading to the ignored Pandas4Warning
+        if ((data.dtype.kind in "Mm") and ("ms" not in str(data.dtype))) or (
+            data.dtype in [ArrowDtype(pa.date32()), ArrowDtype(pa.date64())]
+        ):
+            msg = "|".join(
+                [
+                    # date32/date64
+                    "as_unit not implemented for date",
+                    # timestamp with s unit and US/Pacific or US/Eastern tz
+                    "year 51970 is out of range",
+                    # all others
+                    "Series are different",
+                ]
+            )
+            with pytest.raises(
+                (NotImplementedError, ValueError, AssertionError), match=msg
+            ):
+                super().test_values_for_json(data)
+        else:
+            super().test_values_for_json(data)
+
 
 class TestLogicalOps:
     """Various Series and DataFrame logical ops methods."""
