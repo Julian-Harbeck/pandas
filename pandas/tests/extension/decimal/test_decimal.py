@@ -182,6 +182,13 @@ class TestDecimalArray(base.ExtensionTests):
     def test_unary_ufunc_dunder_equivalence(self, data, ufunc):
         super().test_unary_ufunc_dunder_equivalence(data, ufunc)
 
+    def test_values_for_json(self, data):
+        # GH 65127
+        # DecimalArray does not support roundtrip as Decimal cannot be created from
+        # dictionary created in JSON serialization
+        with pytest.raises(AssertionError, match="Attributes of Series are different"):
+            return super().test_values_for_json(data)
+
 
 def test_take_na_value_other_decimal():
     arr = DecimalArray([decimal.Decimal("1.0"), decimal.Decimal("2.0")])
