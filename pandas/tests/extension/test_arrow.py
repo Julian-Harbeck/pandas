@@ -1074,20 +1074,30 @@ class TestArrowArray(base.ExtensionTests):
         if ((data.dtype.kind in "Mm") and ("ms" not in str(data.dtype))) or (
             data.dtype in [ArrowDtype(pa.date32()), ArrowDtype(pa.date64())]
         ):
-            msg = "|".join(
-                [
-                    # date32/date64
-                    "as_unit not implemented for date",
-                    # timestamp with s unit and US/Pacific or US/Eastern tz
-                    "year 51970 is out of range",
-                    # all others
-                    "Series are different",
-                ]
-            )
-            with pytest.raises(
-                (NotImplementedError, ValueError, AssertionError), match=msg
-            ):
+            try:
                 super().test_values_for_json(data)
+            # date32/date64
+            except NotImplementedError as err:
+                if "as_unit not implemented for date" in str(err):
+                    pytest.xfail("as_unit not implemented for date")
+                raise
+            # timestamp with s unit and US/Pacific or US/Eastern tz
+            except ValueError as err:
+                # second error message for Python 3.14+
+                if any(
+                    s in str(err)
+                    for s in [
+                        "year 51970 is out of range",
+                        "year must be in 1..9999, not 51970",
+                    ]
+                ):
+                    pytest.xfail("year 51970 is out of range")
+                raise
+            # all others
+            except AssertionError as err:
+                if "Series are different" in str(err):
+                    pytest.xfail("Series are different")
+                raise
         else:
             super().test_values_for_json(data)
 

@@ -455,6 +455,10 @@ class TestJSONArray(base.ExtensionTests):
     def test_EA_types(self, engine, data, request):
         super().test_EA_types(engine, data, request)
 
+    @pytest.mark.xfail(
+        raises=AssertionError,
+        reason="JSONArray does not support roundtrip via JSON",
+    )
     def test_values_for_json(self, data):
         # GH 65127
         # JSONArray does not support roundtrip as during JSON serialization each element
@@ -462,8 +466,7 @@ class TestJSONArray(base.ExtensionTests):
         # element being a dictionary itself, and during deserialization these
         # dictionaries are not unpacked again, so the JSONArray cannot be reconstructed
         # with the simple deserialization in the test.
-        with pytest.raises(AssertionError, match="Series are different"):
-            return super().test_values_for_json(data)
+        super().test_values_for_json(data)
 
 
 def custom_assert_series_equal(left, right, *args, **kwargs):
