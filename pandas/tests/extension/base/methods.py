@@ -791,7 +791,7 @@ class BaseMethodsTests:
         values: np.ndarray = data._values_for_json()
 
         # Check that the result is a numpy array
-        assert type(values) == np.ndarray
+        assert isinstance(values, np.ndarray)
 
         # Check that the result is JSON-serializable
         assert isinstance(ujson_dumps(values), str)
