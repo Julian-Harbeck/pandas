@@ -137,3 +137,10 @@ class TestIntervalArray(base.ExtensionTests):
     )
     def test_loc_setitem_with_expansion_preserves_ea_index_dtype(self, data):
         super().test_loc_setitem_with_expansion_preserves_ea_index_dtype(data)
+
+    def test_values_for_json(self, data):
+        # GH 65127
+        # IntervalArray does not support roundtrip as Interval cannot be created from
+        # dictionary created in JSON serialization
+        with pytest.raises(AssertionError, match="Attributes of Series are different"):
+            return super().test_values_for_json(data)
