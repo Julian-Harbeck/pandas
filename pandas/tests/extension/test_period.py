@@ -111,6 +111,12 @@ class TestPeriodArray(base.ExtensionTests):
         result = data.map(lambda x: x, na_action=na_action)
         tm.assert_extension_array_equal(result, data)
 
+    def test_values_for_json(self, data):
+        # GH 65127
+        # PeriodArray currently cannot be serialized to JSON
+        with pytest.raises(OverflowError, match="Maximum recursion level reached"):
+            return super().test_values_for_json(data)
+
 
 class Test2DCompat(base.NDArrayBacked2DTests):
     pass
