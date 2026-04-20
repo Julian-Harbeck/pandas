@@ -1066,9 +1066,11 @@ class TestArrowArray(base.ExtensionTests):
     )
     def test_values_for_json(self, data):
         # GH 65127
-        # All datetime and duration ArrowDtypes with non default resolution of ms fail on roundtrip
-        # The date32 and date64 dtypes fail already in serialization due to as_unit not implemented for them
-        # Currently the json serialization relies on the default 'epoch' format for datetimes, leading to the ignored Pandas4Warning
+        # All datetime and duration ArrowDtypes with non default resolution of ms fail
+        # on roundtrip. The date32 and date64 dtypes fail already in serialization due
+        # to as_unit not implemented for them. Currently the json serialization relies
+        # on the default 'epoch' format for datetimes, leading to the filtered
+        # Pandas4Warning.
         if ((data.dtype.kind in "Mm") and ("ms" not in str(data.dtype))) or (
             data.dtype in [ArrowDtype(pa.date32()), ArrowDtype(pa.date64())]
         ):
