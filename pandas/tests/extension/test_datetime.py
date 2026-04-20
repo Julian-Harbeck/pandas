@@ -144,6 +144,17 @@ class TestDatetimeArray(base.ExtensionTests):
         else:
             return super().check_reduce(ser, op_name, skipna)
 
+    @pytest.mark.filterwarnings(
+        "ignore:The default 'epoch' date format is deprecated:DeprecationWarning"
+    )
+    def test_values_for_json(self, data):
+        # GH 65127
+        # DatetimeArray fails on roundtrip. Also currently the json serialization relies
+        # on the default 'epoch' format for datetimes, leading to the filtered
+        # Pandas4Warning.
+        with pytest.raises(AssertionError, match="Series are different"):
+            super().test_values_for_json(data)
+
 
 class Test2DCompat(base.NDArrayBacked2DTests):
     pass
