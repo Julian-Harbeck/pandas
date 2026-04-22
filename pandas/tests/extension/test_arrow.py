@@ -1064,7 +1064,7 @@ class TestArrowArray(base.ExtensionTests):
     @pytest.mark.filterwarnings(
         "ignore:The default 'epoch' date format is deprecated:DeprecationWarning"
     )
-    def test_values_for_json(self, data):
+    def test_values_for_json(self, data, request):
         # GH 65127
         # All datetime and duration ArrowDtypes with non default resolution of ms fail
         # on roundtrip. The date32 and date64 dtypes fail already in serialization due
@@ -1079,7 +1079,12 @@ class TestArrowArray(base.ExtensionTests):
             # date32/date64
             except NotImplementedError as err:
                 if "as_unit not implemented for date" in str(err):
-                    pytest.xfail("as_unit not implemented for date")
+                    request.applymarker(
+                        pytest.mark.xfail(
+                            raises=NotImplementedError,
+                            reason="as_unit not implemented for date",
+                        )
+                    )
                 raise
             # timestamp with s unit and US/Pacific or US/Eastern tz
             except ValueError as err:
@@ -1091,12 +1096,20 @@ class TestArrowArray(base.ExtensionTests):
                         "year must be in 1..9999, not 51970",
                     ]
                 ):
-                    pytest.xfail("year 51970 is out of range")
+                    request.applymarker(
+                        pytest.mark.xfail(
+                            raises=ValueError, reason="year 51970 is out of range"
+                        )
+                    )
                 raise
             # all others
             except AssertionError as err:
                 if "Series are different" in str(err):
-                    pytest.xfail("Series are different")
+                    request.applymarker(
+                        pytest.mark.xfail(
+                            raises=AssertionError, reason="Series are different"
+                        )
+                    )
                 raise
         else:
             super().test_values_for_json(data)
