@@ -1066,6 +1066,30 @@ class TestArrowArray(base.ExtensionTests):
     )
     def test_values_for_json(self, data, request):
         # GH 65127
+        # The date32 and date64 dtypes fail already in serialization due to as_unit not
+        # implemented for them. Currently the json serialization relies on the default
+        # 'epoch' format for datetimes, leading to the filtered Pandas4Warning.
+        if data.dtype in [ArrowDtype(pa.date32()), ArrowDtype(pa.date64())]:
+            try:
+                super().test_values_for_json(data)
+            # date32/date64
+            except NotImplementedError as err:
+                if "as_unit not implemented for date" in str(err):
+                    request.applymarker(
+                        pytest.mark.xfail(
+                            raises=NotImplementedError,
+                            reason="as_unit not implemented for date",
+                        )
+                    )
+                raise
+        else:
+            super().test_values_for_json(data)
+
+    @pytest.mark.filterwarnings(
+        "ignore:The default 'epoch' date format is deprecated:DeprecationWarning"
+    )
+    def test_json_roundtrip(self, data, request):
+        # GH 65127
         # All datetime and duration ArrowDtypes with non default resolution of ms fail
         # on roundtrip. The date32 and date64 dtypes fail already in serialization due
         # to as_unit not implemented for them. Currently the json serialization relies
@@ -1075,7 +1099,7 @@ class TestArrowArray(base.ExtensionTests):
             data.dtype in [ArrowDtype(pa.date32()), ArrowDtype(pa.date64())]
         ):
             try:
-                super().test_values_for_json(data)
+                super().test_json_roundtrip(data)
             # date32/date64
             except NotImplementedError as err:
                 if "as_unit not implemented for date" in str(err):
@@ -1112,7 +1136,7 @@ class TestArrowArray(base.ExtensionTests):
                     )
                 raise
         else:
-            super().test_values_for_json(data)
+            super().test_json_roundtrip(data)
 
 
 class TestLogicalOps:

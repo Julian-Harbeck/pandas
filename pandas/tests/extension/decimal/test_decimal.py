@@ -185,11 +185,11 @@ class TestDecimalArray(base.ExtensionTests):
     @pytest.mark.xfail(
         raises=AssertionError, reason="DecimalArray does not support roundtrip"
     )
-    def test_values_for_json(self, data):
+    def test_json_roundtrip(self, data):
         # GH 65127
         # DecimalArray does not support roundtrip as Decimal cannot be created from
         # dictionary created in JSON serialization
-        super().test_values_for_json(data)
+        super().test_json_roundtrip(data)
 
 
 def test_take_na_value_other_decimal():

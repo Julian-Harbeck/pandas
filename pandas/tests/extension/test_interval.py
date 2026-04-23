@@ -143,8 +143,8 @@ class TestIntervalArray(base.ExtensionTests):
         reason="IntervalArray does not support roundtrip as Interval cannot be created "
         "from dictionary created in JSON serialization",
     )
-    def test_values_for_json(self, data):
+    def test_json_roundtrip(self, data):
         # GH 65127
         # IntervalArray does not support roundtrip as Interval cannot be created from
         # dictionary created in JSON serialization
-        super().test_values_for_json(data)
+        super().test_json_roundtrip(data)

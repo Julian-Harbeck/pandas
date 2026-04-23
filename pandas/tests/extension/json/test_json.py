@@ -459,14 +459,14 @@ class TestJSONArray(base.ExtensionTests):
         raises=AssertionError,
         reason="JSONArray does not support roundtrip via JSON",
     )
-    def test_values_for_json(self, data):
+    def test_json_roundtrip(self, data):
         # GH 65127
         # JSONArray does not support roundtrip as during JSON serialization each element
         # of the array is packed into another dictionary ``{"data": element}`` with
         # element being a dictionary itself, and during deserialization these
         # dictionaries are not unpacked again, so the JSONArray cannot be reconstructed
         # with the simple deserialization in the test.
-        super().test_values_for_json(data)
+        super().test_json_roundtrip(data)
 
 
 def custom_assert_series_equal(left, right, *args, **kwargs):

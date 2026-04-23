@@ -802,6 +802,10 @@ class BaseMethodsTests:
         expected: str = pd.Series(values).to_json()
         assert result == expected
 
+    def test_json_roundtrip(self, data):
+        # GH 65127
         # Test roundtrip through JSON
+        ser = pd.Series(data)
+        result: str = ser.to_json()
         ser_new = pd.read_json(StringIO(result), typ="series", dtype=data.dtype)
         tm.assert_series_equal(ser_new, ser)

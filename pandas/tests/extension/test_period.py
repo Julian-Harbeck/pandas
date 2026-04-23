@@ -119,6 +119,14 @@ class TestPeriodArray(base.ExtensionTests):
         # PeriodArray currently cannot be serialized to JSON
         super().test_values_for_json(data)
 
+    @pytest.mark.xfail(
+        raises=OverflowError, reason="PeriodArray cannot be serialized to JSON"
+    )
+    def test_json_roundtrip(self, data):
+        # GH 65127
+        # PeriodArray currently cannot be serialized to JSON
+        super().test_json_roundtrip(data)
+
 
 class Test2DCompat(base.NDArrayBacked2DTests):
     pass
